@@ -1,6 +1,8 @@
 import datetime
 import keyboard
+import Sound
 
+Sound.AudioDirection()
 a = datetime.datetime.now()
 count = 0
 array = []
@@ -18,6 +20,5 @@ while True:
 
     elif count == 10:
         for results in array:
-            print(results[9])
-            #print(results)
+            print(results)
         exit()
