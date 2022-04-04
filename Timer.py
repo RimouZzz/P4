@@ -6,7 +6,7 @@ count = 0
 array = []
 
 while True:
-    if count < 5:
+    if count < 10:
         if keyboard.read_key() == "p":
             b = datetime.datetime.now()
             delta = b - a
@@ -16,7 +16,8 @@ while True:
             count += 1
             #print(count)
 
-    elif count == 5:
+    elif count == 10:
         for results in array:
-            print(results)
+            print(results[9])
+            #print(results)
         exit()
