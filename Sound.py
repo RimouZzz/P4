@@ -26,8 +26,8 @@ def AudioDirection():
         Finaldirection = Speakers[Chosenspeaker][1] + Sounds[Chosensound][1]
         print("The total direction is:", Finaldirection)
 
-        threading.start_new_thread(playsound(Sounds[Chosensound][2]))
-
+        playsound(Sounds[Chosensound][2])
+        print(threading.active_count())
         Sounds.pop(Chosensound)
 
         input("Press Enter to continue...")
