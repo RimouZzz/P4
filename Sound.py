@@ -1,6 +1,6 @@
 import random
-from playsound import playsound
-
+from playsound import playsound #Version 1.2.2
+import threading
 
 def AudioDirection():
     i = 0
