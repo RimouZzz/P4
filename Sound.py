@@ -4,10 +4,10 @@ import threading
 
 def AudioDirection():
     i = 0
-    Sounds = [[0, 32, 'clean.wav'], [1, 43, 'Painshort.mp3'], [2, 12, 'Malescream.mp3'], [3, 1, 'test.wav']]
+    Sounds = [[0, 32, 'clean.wav'], [1, 43, 'Painshort.mp3'], [2, 12, 'Malescream.mp3'], [3, 45, 'test.wav']]
     while(i < 15):
 
-        #Ffirst number = which sound 2nd = direction of sound between two speakers
+        #First number = which sound 2nd = direction of sound between two speakers
         Chosensound = random.randint(0, len([Sounds]))  # Pick random sound
 
         Speakers = [[0, 0], [1, 45], [2, 90], [3, 135], [4, 180], [5, 225], [6, 270], [7, 315]]#First number = which speaker 2nd = degrees
@@ -26,7 +26,8 @@ def AudioDirection():
         Finaldirection = Speakers[Chosenspeaker][1] + Sounds[Chosensound][1]
         print("The total direction is:", Finaldirection)
 
-        playsound(Sounds[Chosensound][2])
+        threading.start_new_thread(playsound(Sounds[Chosensound][2]))
+
         Sounds.pop(Chosensound)
 
         input("Press Enter to continue...")
