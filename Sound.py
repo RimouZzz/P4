@@ -19,7 +19,7 @@ class myThread (threading.Thread):
 def AudioDirection():
     i = 0
     Sounds = [[0, 32, 'clean.wav'], [1, 43, 'Painshort.mp3'], [2, 12, 'Malescream.mp3'], [3, 45, 'test.wav']]
-    while(i < 15):
+    while(i < 4):
 
         #First number = which sound 2nd = direction of sound between two speakers
         Chosensound = random.randint(0, len([Sounds]))  # Pick random sound
@@ -32,12 +32,13 @@ def AudioDirection():
         if (Chosenspeaker != 7):
             Speaker2 = Chosenspeaker +1
 
-        print(Chosenspeaker,Speaker2)
+        print(Chosenspeaker, Speaker2)
 
         print("sound coming from speaker:", Speakers[Chosenspeaker][0],"and", Speakers[Speaker2][0], "With the direction of:", Speakers[Chosenspeaker][1])#Print speaker chosen, and which direction it has.
         print("Playing sound:", Sounds[Chosensound][0], "With the direction of:", Sounds[Chosensound][1])#Print which sound, and which angle the sound has.
 
         Finaldirection = Speakers[Chosenspeaker][1] + Sounds[Chosensound][1]
+
         print("The total direction is:", Finaldirection)
 
         #playsound(Sounds[Chosensound][2])
