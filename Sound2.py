@@ -1,6 +1,7 @@
 import random
-from playsound import playsound #Version 1.2.2
-
+import time
+import sounddevice as sd
+import soundfile as sf
 
 def AudioDirection():
     i = 0
@@ -22,13 +23,20 @@ def AudioDirection():
             speakerNr2 = 0
         currentDegree = currentSpeakerAngle + sounds['orientation'][j]
 
+        filename = sounds['file'][j]
+        data, fs = sf.read(filename, dtype='float32')
+        sd.play(data, fs)
+        start = time.time()
         print(f"playing {sounds['mood'][j]} sound {sounds['name'][j]} "
               f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}°")
-        playsound(sounds['file'][j], block=False)
+
 
         while True:
             guess = int(input("Type in the angle: "))
             if guess == currentDegree:
+                end = time.time()
+                finalTime = str(end - start)
+                print(f"elapsed time: {finalTime[:5]}")
                 i += 1
                 break
             else:
