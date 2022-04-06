@@ -1,7 +1,9 @@
-import random
-import time
 import sounddevice as sd
 import soundfile as sf
+import random
+import serial
+import time
+
 
 def AudioDirection():
     i = 0
@@ -11,6 +13,8 @@ def AudioDirection():
         'name': ["CLEAN GUITAR", "CLEAN GUITAR (RIGHT)"],
         'mood': ["Neutral", "Neutral"]
     }
+
+    arduino = serial.Serial('COM7', 9600)
 
     while i < 15:
         j = random.randint(0, 1)
@@ -32,17 +36,17 @@ def AudioDirection():
 
 
         while True:
-            guess = int(input("Type in the angle: "))
+            arduinoRead = arduino.readline()
+            arduinoToString = arduinoRead.decode()
+            guess = int(arduinoToString)
             if guess == currentDegree:
                 end = time.time()
                 finalTime = str(end - start)
                 print(f"elapsed time: {finalTime[:5]}")
+                arduinoResponse = 'c'
+                arduino.write(arduinoResponse.encode())
                 i += 1
                 break
-            else:
-                print("try again")
-
-        print(" ")
 
 
 AudioDirection()
