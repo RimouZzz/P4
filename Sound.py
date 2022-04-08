@@ -1,71 +1,53 @@
+import sounddevice as sd
+import soundfile as sf
 import random
-from playsound import playsound #Version 1.2.2
-import threading
+import serial
+import time
 
-
-class myThread (threading.Thread):
-
-   def __init__(self, threadID, name, counter):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.counter = counter
-
-   def run(self):
-      print("Starting " + self.name)
-      soundgobrr(self.name, 5, self.counter)
-      print("Exiting " + self.name)
 
 def AudioDirection():
     i = 0
-    Sounds = [[0, 32, 'clean.wav'], [1, 43, 'Painshort.mp3'], [2, 12, 'Malescream.mp3'], [3, 45, 'test.wav']]
-    while(i < 4):
+    sounds = {
+        'orientation': [32, 45],
+        'file': ['Sound Files/clean.wav', 'Sound Files/test.wav'],
+        'name': ["CLEAN GUITAR", "CLEAN GUITAR (RIGHT)"],
+        'mood': ["Neutral", "Neutral"]
+    }
 
-        #First number = which sound 2nd = direction of sound between two speakers
-        Chosensound = random.randint(0, len([Sounds]))  # Pick random sound
+    arduino = serial.Serial('COM7', 9600)
 
-        Speakers = [[0, 0], [1, 45], [2, 90], [3, 135], [4, 180], [5, 225], [6, 270], [7, 315]]#First number = which speaker 2nd = degrees
-        Chosenspeaker = random.randint(0, 7)#Pick random speaker
+    while i < 15:
+        j = random.randint(0, 1)
+        soundsQue = []
 
-        if (Chosenspeaker == 7):
-            Speaker2 = 0
-        if (Chosenspeaker != 7):
-            Speaker2 = Chosenspeaker +1
+        speakerAngleVals = [0, 45, 90, 135, 180, 225, 270, 315]
+        currentSpeakerAngle = random.choice(speakerAngleVals)
+        speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)
+        speakerNr2 = speakerNr1+1
+        if speakerNr1 == 7:
+            speakerNr2 = 0
+        currentDegree = currentSpeakerAngle + sounds['orientation'][j]
 
-        print(Chosenspeaker, Speaker2)
-
-        print("sound coming from speaker:", Speakers[Chosenspeaker][0],"and", Speakers[Speaker2][0], "With the direction of:", Speakers[Chosenspeaker][1])#Print speaker chosen, and which direction it has.
-        print("Playing sound:", Sounds[Chosensound][0], "With the direction of:", Sounds[Chosensound][1])#Print which sound, and which angle the sound has.
-
-        Finaldirection = Speakers[Chosenspeaker][1] + Sounds[Chosensound][1]
-
-        print("The total direction is:", Finaldirection)
-
-        #playsound(Sounds[Chosensound][2])
-        input("Press Enter to continue...")
-        i += 1
-        print(" ")
+        filename = sounds['file'][j]
+        data, fs = sf.read(filename, dtype='float32')
+        sd.play(data, fs)
+        start = time.time()
+        print(f"playing {sounds['mood'][j]} sound {sounds['name'][j]} "
+              f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}°")
 
 
-    return Sounds, Chosensound
+        while True:
+            arduinoRead = arduino.readline()
+            arduinoToString = arduinoRead.decode()
+            guess = int(arduinoToString)
+            if guess == currentDegree:
+                end = time.time()
+                finalTime = str(end - start)
+                print(f"elapsed time: {finalTime[:5]}")
+                arduinoResponse = 'c'
+                arduino.write(arduinoResponse.encode())
+                i += 1
+                break
 
 
 AudioDirection()
-
-def soundgobrr():
-    playsound(AudioDirection.Sounds[AudioDirection.Chosensound][2])
-
-"""
-        myThread.run(soundgobrr)
-        Sounds.pop(Chosensound)
-
-        # Create new threads
-        thread1 = myThread(1, "Thread-1", 1)
-        thread2 = myThread(2, "Thread-2", 2)
-
-        # Start new Threads
-        thread1.start()
-        thread2.start()
-"""
-
-soundgobrr()
