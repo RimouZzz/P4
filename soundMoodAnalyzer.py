@@ -1,6 +1,8 @@
 import sounddevice as sd
 import soundfile as sf
-import csv
+import soundMoodCSV
+
+logToCSV = soundMoodCSV.csvWriter()
 
 
 def soundMood():
@@ -13,37 +15,32 @@ def soundMood():
               'lydfiler/stikkontakt.wav', 'lydfiler/Tearing.wav', 'lydfiler/TuborgClassic.wav', 'lydfiler/Uprise.wav',
               'lydfiler/WeirdoScream.wav']
     currentSound = 0
-    soundname = sounds[currentSound][9:-4]
+    mood = ''
+    logToCSV.writeHeader()
     print("Sound mood determiner: ")
     print("1: Positive\n"
           "2: Neutral\n"
           "3: Negative")
 
     while currentSound < len(sounds):
+        soundname = sounds[currentSound][9:-4]
         filename = sounds[currentSound]
         data, fs = sf.read(filename, dtype='float32')
         sd.play(data, fs)
-        currentMood = input("Type in 1 for positive, 2 for neutral or 3 for negative: ")
+        print(" ")
+        print(f"playing sound nr: {currentSound+1} out of {len(sounds)}")
+        currentMood = int(input("Type in 1 for positive, 2 for neutral or 3 for negative: "))
         if currentMood == 1:
             mood = 'Positive'
-        if currentMood == 2:
+        elif currentMood == 2:
             mood = 'Neutral'
-        if currentMood == 3:
+        elif currentMood == 3:
             mood = 'Negative'
-        #else:
-         #   input("Type in 1 for positive, 2 for neutral or 3 for negative: ")
+        else:
+            input("Type in 1 for positive, 2 for neutral or 3 for negative: ")
+
         currentSound += 1
-        print(currentSound)
         print(" ")
-
-        row = [soundname, mood]
-        with open('CSV files/soundMoods.csv', mode='a', encoding='UTF8', newline='') as data_collection:
-            data_collection = csv.writer(data_collection, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            data_collection.writerow(row)
-
-    header = ['Sound name', 'Mood']
-    with open('CSV files/soundMoods.csv', mode='w', encoding='UTF8', newline='') as data_collection:
-        data_collection = csv.writer(data_collection, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        data_collection.writerow(header)
+        logToCSV.writeData(soundname, mood)
 
 soundMood()
