@@ -4,8 +4,8 @@ import time
 header = ['Sound name', 'Mood']
 timeString = time.strftime("%d%m%Y-%H%M%S")
 
-class csvWriter():
 
+class csvWriter():
     def writeHeader(self):
         with open(f'CSV files/soundMoods{timeString}.csv', mode='w', encoding='UTF8', newline='') as data_collection:
             data_collection = csv.writer(data_collection, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
