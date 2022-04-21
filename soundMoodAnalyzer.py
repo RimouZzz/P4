@@ -6,8 +6,8 @@ logToCSV = soundMoodCSV.csvWriter()
 
 
 def soundMood():
-    sounds = ['lydfiler/Announcement.wav', 'lydfiler/applaus.wav', 'lydfiler/bane gennemført type beat.wav',
-              'lydfiler/EM.wav', 'lydfiler/FamilyStore.wav', 'lydfiler/fuglesang.wav', 'lydfiler/GirlScream.wav',
+    sounds = ['lydfiler/Announcement.wav', 'lydfiler/applaus.wav', 'lydfiler/Level complete.wav',
+              'lydfiler/Chatter.wav', 'lydfiler/FamilyStore.wav', 'lydfiler/fuglesang.wav', 'lydfiler/GirlScream.wav',
               'lydfiler/GlassBreaking.wav', 'lydfiler/goblin agtig.wav', 'lydfiler/HalloweenImpact.wav',
               'lydfiler/HarpFlourish.wav', 'lydfiler/HipHopBeat.wav', 'lydfiler/horror sweep.wav',
               'lydfiler/hundehvalp.wav', 'lydfiler/kuglepen.wav', 'lydfiler/magisk fe.wav', 'lydfiler/ManScream.wav',
