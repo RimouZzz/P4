@@ -8,7 +8,7 @@ import time
 def AudioDirection():
     i = 0
     sounds = {
-        'orientation': [16, 5, 12, 12, -16, -3, 3, -16, 1, -8, -14, -4, -12, 7, 17], #Currently random numbers, need to be updated
+        'orientation': [16, 5, 12, 12, 17, 3, 7, 21, 1, 8, 14, 4, 12, 7, 17], #Currently random numbers, need to be updated
         'file': ['lydfiler/Negative/GirlScream.wav', 'lydfiler/Negative/GlassBreaking.wav',
                  'lydfiler/Negative/ManScream.wav', 'lydfiler/Negative/monster growl.wav',
                  'lydfiler/Negative/WeirdoScream.wav', 'lydfiler/Neutral/Chatter.wav',
@@ -24,28 +24,36 @@ def AudioDirection():
                  "Neutral", "Neutral", "Neutral", "Positive", "Positive", "Positive", "Positive", "Positive"]
     }
 
-    arduino = serial.Serial('COM9', 9600) #Check portnummer i Arduino før start
+    arduino = serial.Serial('COM10', 9600) #Check portnummer i Arduino før start
+
+    negativeSounds = [0, 1, 2, 3, 4]
+    neutralSounds = [5, 6, 7, 8, 9]
+    positiveSounds = [10, 11, 12, 13, 14]
+
+    random.shuffle(negativeSounds)
+    random.shuffle(neutralSounds)
+    random.shuffle(positiveSounds)
+
+    currentSounds = []
+    for x, y, z in zip(negativeSounds, neutralSounds, positiveSounds):
+        currentSounds += [x, y, z]
 
     while i < 15:
-        currentSound = random.randint(0, 14)
-        lastSound = currentSound
-        if sounds['mood'][currentSound] == sounds['mood'][lastSound]:
-
-
-
+        print(f"current sound list: {currentSounds}")
         speakerAngleVals = [0, 45, 90, 135, 180, 225, 270, 315]
         currentSpeakerAngle = random.choice(speakerAngleVals)
-        speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)
+        speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)+1
         speakerNr2 = speakerNr1+1
-        if speakerNr1 == 7:
-            speakerNr2 = 0
-        currentDegree = currentSpeakerAngle + sounds['orientation'][currentSound]
+        if speakerNr1 == 8:
+            speakerNr2 = 1
+        output_mapping = [speakerNr1, speakerNr2]
+        currentDegree = currentSpeakerAngle + sounds['orientation'][currentSounds[0]]
 
-        filename = sounds['file'][currentSound]
+        filename = sounds['file'][currentSounds[0]]
         data, fs = sf.read(filename, dtype='float32')
-        sd.play(data, fs)
+        sd.play(data, fs, mapping=output_mapping, loop=True)
         start = time.time()
-        print(f"playing {sounds['mood'][currentSound]} sound {sounds['name'][currentSound]} "
+        print(f"playing {sounds['mood'][currentSounds[0]]} sound {sounds['name'][currentSounds[0]]} "
               f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}°")
 
 
@@ -53,8 +61,9 @@ def AudioDirection():
             arduinoRead = arduino.readline()
             arduinoToString = arduinoRead.decode()
             guess = int(arduinoToString)
-            print(guess)
+            #print(guess)
             if guess == currentDegree:
+                currentSounds.pop(0)
                 end = time.time()
                 finalTime = str(end - start)
                 print(f"elapsed time: {finalTime[:5]}")
