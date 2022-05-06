@@ -8,15 +8,22 @@ import time
 def AudioDirection():
     i = 0
     sounds = {
-        'orientation': [16, 5, 12, 12, 17, 3, 7, 21, 1, 8, 14, 4, 12, 7, 17], #Currently random numbers, need to be updated
-        'file': ['lydfiler/Negative/GirlScream.wav', 'lydfiler/Negative/GlassBreaking.wav',
-                 'lydfiler/Negative/ManScream.wav', 'lydfiler/Negative/monster growl.wav',
-                 'lydfiler/Negative/WeirdoScream.wav', 'lydfiler/Neutral/Chatter.wav',
-                 'lydfiler/Neutral/HipHopBeat.wav', 'lydfiler/Neutral/kuglepen.wav',
-                 'lydfiler/Neutral/skrivemaskine.wav', 'lydfiler/Neutral/stikkontakt.wav',
-                 'lydfiler/Positive/Announcement.wav', 'lydfiler/Positive/applaus.wav',
-                 'lydfiler/Positive/HarpFlourish.wav', 'lydfiler/Positive/Level complete.wav',
-                 'lydfiler/Positive/Uprise.wav'],
+        'orientation': [22, 30, 40, 0, 22, 10, 15, 35, 40, 20, 10, 30, 45, 22, 0], #Currently random numbers, need to be updated
+        'file': ['lydfiler/Negative-Med-Vinkel/lydfiler_Negative_GirlScream+22.wav',
+                 'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_GlassBreaking+30.wav',
+                 'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_ManScream+40.wav',
+                 'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_Monster_Growl+0.wav',
+                 'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_WeirdoScream+22.wav',
+                 'lydfiler/Neutrale-Med-Vinkel/lydfiler_Neutral_Chatter+10.wav',
+                 'lydfiler/Neutrale-Med-Vinkel/lydfiler_Neutral_HipHopBeat+15.wav',
+                 'lydfiler/Neutrale-Med-Vinkel/lydfiler_Neutral_Kuglepen+35.wav',
+                 'lydfiler/Neutrale-Med-Vinkel/lydfiler_Neutral_Skrivemaskine+40.wav',
+                 'lydfiler/Neutrale-Med-Vinkel/lydfiler_Neutral_Stikkontakt+20.wav',
+                 'lydfiler/Positive_Med_Vinkel/lydfiler_Positive_Announcement+10.wav',
+                 'lydfiler/Positive_Med_Vinkel/lydfiler_Positive_Applaus+30.wav',
+                 'lydfiler/Positive_Med_Vinkel/lydfiler_Positive_harpFlourish+45.wav',
+                 'lydfiler/Positive_Med_Vinkel/lydfiler_Positive_LevelComplete+22.wav',
+                 'lydfiler/Positive_Med_Vinkel/lydfiler_Positive_Uprise+0.wav'],
         'name': ["Girl Scream", "Glass Breaking", "Man scream", "Monster growl", "Weirdo scream", "Chatter",
                  "HipHop beat", "Kuglepen", "Skrivemaskine", "Stikkontakt", "Announcement", "applaus", "Harp floursih",
                  "Level complete", "Uprise"],
@@ -24,7 +31,7 @@ def AudioDirection():
                  "Neutral", "Neutral", "Neutral", "Positive", "Positive", "Positive", "Positive", "Positive"]
     }
 
-    arduino = serial.Serial('COM10', 9600) #Check portnummer i Arduino før start
+    arduino = serial.Serial('COM9', 9600) #Check portnummer i Arduino før start
 
     negativeSounds = [0, 1, 2, 3, 4]
     neutralSounds = [5, 6, 7, 8, 9]
@@ -61,8 +68,15 @@ def AudioDirection():
             arduinoRead = arduino.readline()
             arduinoToString = arduinoRead.decode()
             guess = int(arduinoToString)
-            #print(guess)
-            if guess == currentDegree:
+            print(guess)
+            guessSpectrum = [guess, guess-1, guess-2, guess-3, guess-4, guess-5, guess+1, guess+2, guess+3, guess+4, guess+5]
+            if currentDegree in guessSpectrum:
+                correctInputTimerStart = time.time()
+                correctInputTimerStop = time.time()
+                finalCorrectInputTime = int(correctInputTimerStop - correctInputTimerStart)
+                if finalCorrectInputTime > 2:
+                    print("2 seconds")
+
                 currentSounds.pop(0)
                 end = time.time()
                 finalTime = str(end - start)
