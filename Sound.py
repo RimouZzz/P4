@@ -1,5 +1,7 @@
 import sounddevice as sd
 import soundfile as sf
+import datetime
+import MainCSV
 import random
 import serial
 import time
@@ -31,7 +33,7 @@ def AudioDirection():
                  "Neutral", "Neutral", "Neutral", "Positive", "Positive", "Positive", "Positive", "Positive"]
     }
 
-    arduino = serial.Serial('COM9', 9600) #Check portnummer i Arduino før start
+    arduino = serial.Serial('COM11', 9600) #Check portnummer i Arduino før start
 
     negativeSounds = [0, 1, 2, 3, 4]
     neutralSounds = [5, 6, 7, 8, 9]
@@ -44,6 +46,12 @@ def AudioDirection():
     currentSounds = []
     for x, y, z in zip(negativeSounds, neutralSounds, positiveSounds):
         currentSounds += [x, y, z]
+
+    period = datetime.timedelta(seconds=1)
+    nextTime = datetime.datetime.now() + period
+    seconds = 0
+
+    MainCSV.csvWriter.writeHeader()
 
     while i < 15:
         print(f"current sound list: {currentSounds}")
@@ -62,6 +70,7 @@ def AudioDirection():
         start = time.time()
         print(f"playing {sounds['mood'][currentSounds[0]]} sound {sounds['name'][currentSounds[0]]} "
               f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}°")
+        print(f"Sound no. {i+1}")
 
 
         while True:
@@ -70,20 +79,23 @@ def AudioDirection():
             guess = int(arduinoToString)
             print(guess)
             guessSpectrum = [guess, guess-1, guess-2, guess-3, guess-4, guess-5, guess+1, guess+2, guess+3, guess+4, guess+5]
-            if currentDegree in guessSpectrum:
-                correctInputTimerStart = time.time()
-                correctInputTimerStop = time.time()
-                finalCorrectInputTime = int(correctInputTimerStop - correctInputTimerStart)
-                if finalCorrectInputTime > 2:
-                    print("2 seconds")
+            while currentDegree in guessSpectrum:
+                seconds += 1
+                nextTime += period
+                if seconds == 2:
+                    acc = currentDegree - guess
+                    MainCSV.csvWriter.writeData(0, MainCSV.testNum, MainCSV.age, MainCSV.female, MainCSV.hearing,
+                                                finalTime[:5], sounds['name'][currentSounds[0]],
+                                                sounds['mood'][currentSounds[0]], acc)
+                    currentSounds.pop(0)
+                    end = time.time()
+                    finalTime = str(end - start)
+                    print(f"elapsed time: {finalTime[:5]}")
+                    arduinoResponse = 'c'
+                    arduino.write(arduinoResponse.encode())
+                    i += 1
+                    seconds = 0
 
-                currentSounds.pop(0)
-                end = time.time()
-                finalTime = str(end - start)
-                print(f"elapsed time: {finalTime[:5]}")
-                arduinoResponse = 'c'
-                arduino.write(arduinoResponse.encode())
-                i += 1
                 break
 
 
