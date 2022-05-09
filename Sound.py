@@ -61,6 +61,11 @@ def AudioDirection():
         speakerNr2 = speakerNr1+1
         if speakerNr1 == 8:
             speakerNr2 = 1
+        while prevSpeaker == speakerNr1:
+            currentSpeakerAngle = random.choice(speakerAngleVals)
+            speakerNr1 = speakerAngleVals.index(currentSpeakerAngle) + 1
+        prevSpeaker = speakerNr1
+
         output_mapping = [speakerNr1, speakerNr2]
         currentDegree = currentSpeakerAngle + sounds['orientation'][currentSounds[0]]
 
