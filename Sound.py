@@ -1,6 +1,5 @@
 import sounddevice as sd
 import soundfile as sf
-import datetime
 import MainCSV
 import random
 import serial
@@ -47,24 +46,26 @@ def AudioDirection():
     for x, y, z in zip(negativeSounds, neutralSounds, positiveSounds):
         currentSounds += [x, y, z]
 
-    period = datetime.timedelta(seconds=1)
-    nextTime = datetime.datetime.now() + period
-    seconds = 0
-
-    MainCSV.csvWriter.writeHeader()
+    MainCSV.csvWriter.writeHeader(0)
 
     while i < 15:
         print(f"current sound list: {currentSounds}")
         speakerAngleVals = [0, 45, 90, 135, 180, 225, 270, 315]
         currentSpeakerAngle = random.choice(speakerAngleVals)
         speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)+1
-        speakerNr2 = speakerNr1+1
+        if speakerNr1 == 3:
+            speakerNr1 = 2
+        if speakerNr1 == 4:
+            speakerNr1 = 5
+        speakerNr2 = speakerNr1 + 1
         if speakerNr1 == 8:
             speakerNr2 = 1
-        while prevSpeaker == speakerNr1:
-            currentSpeakerAngle = random.choice(speakerAngleVals)
-            speakerNr1 = speakerAngleVals.index(currentSpeakerAngle) + 1
-        prevSpeaker = speakerNr1
+
+
+        #prevSpeaker = 10
+        #while prevSpeaker == speakerNr1:
+         #   currentSpeakerAngle = random.choice(speakerAngleVals)
+          #  speakerNr1 = speakerAngleVals.index(currentSpeakerAngle) + 1
 
         output_mapping = [speakerNr1, speakerNr2]
         currentDegree = currentSpeakerAngle + sounds['orientation'][currentSounds[0]]
@@ -74,9 +75,7 @@ def AudioDirection():
         sd.play(data, fs, mapping=output_mapping, loop=True)
         start = time.time()
         print(f"playing {sounds['mood'][currentSounds[0]]} sound {sounds['name'][currentSounds[0]]} "
-              f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}°")
-        print(f"Sound no. {i+1}")
-
+              f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}° | Sound no. {i+1}")
 
         while True:
             arduinoRead = arduino.readline()
@@ -84,23 +83,14 @@ def AudioDirection():
             guess = int(arduinoToString)
             print(guess)
             guessSpectrum = [guess, guess-1, guess-2, guess-3, guess-4, guess-5, guess+1, guess+2, guess+3, guess+4, guess+5]
-            while currentDegree in guessSpectrum:
-                seconds += 1
-                nextTime += period
-                if seconds == 2:
-                    acc = currentDegree - guess
-                    MainCSV.csvWriter.writeData(0, MainCSV.testNum, MainCSV.age, MainCSV.female, MainCSV.hearing,
-                                                finalTime[:5], sounds['name'][currentSounds[0]],
-                                                sounds['mood'][currentSounds[0]], acc)
-                    currentSounds.pop(0)
-                    end = time.time()
-                    finalTime = str(end - start)
-                    print(f"elapsed time: {finalTime[:5]}")
-                    arduinoResponse = 'c'
-                    arduino.write(arduinoResponse.encode())
-                    i += 1
-                    seconds = 0
-
+            if currentDegree in guessSpectrum:
+                acc = currentDegree-guess
+                end = time.time()
+                finalTime = str(end - start)
+                print(f"elapsed time: {finalTime[:5]}")
+                MainCSV.csvWriter.writeData(0, MainCSV.testNum, MainCSV.age, MainCSV.female, MainCSV.hearing, MainCSV.blind, finalTime[:5], sounds['name'][currentSounds[0]], sounds['mood'][currentSounds[0]], speakerNr1, acc)
+                currentSounds.pop(0)
+                i += 1
                 break
 
 
