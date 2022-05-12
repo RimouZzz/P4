@@ -55,8 +55,10 @@ def AudioDirection():
         speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)+1
         if speakerNr1 == 3:
             speakerNr1 = 2
+            currentSpeakerAngle = 45
         if speakerNr1 == 4:
             speakerNr1 = 5
+            currentSpeakerAngle = 180
         speakerNr2 = speakerNr1 + 1
         if speakerNr1 == 8:
             speakerNr2 = 1
