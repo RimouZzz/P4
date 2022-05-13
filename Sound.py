@@ -9,7 +9,7 @@ import time
 def AudioDirection():
     i = 0
     sounds = {
-        'orientation': [22, 30, 40, 0, 22, 10, 15, 35, 40, 20, 10, 30, 45, 22, 0], #Currently random numbers, need to be updated
+        'orientation': [22, 30, 40, 0, 22, 10, 15, 35, 40, 20, 10, 30, 45, 22, 0],
         'file': ['lydfiler/Negative-Med-Vinkel/lydfiler_Negative_GirlScream+22.wav',
                  'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_GlassBreaking+30.wav',
                  'lydfiler/Negative-Med-Vinkel/lydfiler_Negative_ManScream+40.wav',
@@ -53,6 +53,10 @@ def AudioDirection():
         speakerAngleVals = [0, 45, 90, 135, 180, 225, 270, 315]
         currentSpeakerAngle = random.choice(speakerAngleVals)
         speakerNr1 = speakerAngleVals.index(currentSpeakerAngle)+1
+        prevSpeaker = 10
+        while prevSpeaker == speakerNr1:
+            currentSpeakerAngle = random.choice(speakerAngleVals)
+            speakerNr1 = speakerAngleVals.index(currentSpeakerAngle) + 1
         if speakerNr1 == 3:
             speakerNr1 = 2
             currentSpeakerAngle = 45
@@ -63,18 +67,12 @@ def AudioDirection():
         if speakerNr1 == 8:
             speakerNr2 = 1
 
-
-        #prevSpeaker = 10
-        #while prevSpeaker == speakerNr1:
-         #   currentSpeakerAngle = random.choice(speakerAngleVals)
-          #  speakerNr1 = speakerAngleVals.index(currentSpeakerAngle) + 1
-
-        output_mapping = [speakerNr1, speakerNr2]
+        outputMapping = [speakerNr1, speakerNr2]
         currentDegree = currentSpeakerAngle + sounds['orientation'][currentSounds[0]]
 
         filename = sounds['file'][currentSounds[0]]
         data, fs = sf.read(filename, dtype='float32')
-        sd.play(data, fs, mapping=output_mapping, loop=True)
+        sd.play(data, fs, mapping=outputMapping, loop=True)
         start = time.time()
         print(f"playing {sounds['mood'][currentSounds[0]]} sound {sounds['name'][currentSounds[0]]} "
               f"on speakers {speakerNr1} and {speakerNr2} at angle {currentDegree}° | Sound no. {i+1}")
