@@ -1,0 +1,16 @@
+TestNr.;Age;Female;Hearing;Blindfold?;ReactionTime;SoundName;SoundMood;SpeakerNr;Precision
+7;22;False;7;False;40.96;Girl Scream;Negative;5;-3
+7;22;False;7;False;148.8;Stikkontakt;Neutral;2;-1
+7;22;False;7;False;3.716;Announcement;Positive;1;4
+7;22;False;7;False;3.115;Monster growl;Negative;2;0
+7;22;False;7;False;10.06;Chatter;Neutral;2;1
+7;22;False;7;False;10.46;Level complete;Positive;1;1
+7;22;False;7;False;5.613;Glass Breaking;Negative;5;-4
+7;22;False;7;False;4.230;HipHop beat;Neutral;6;2
+7;22;False;7;False;9.257;applaus;Positive;2;-2
+7;22;False;7;False;3.078;Man scream;Negative;5;-4
+7;22;False;7;False;8.378;Kuglepen;Neutral;2;2
+7;22;False;7;False;3.057;Uprise;Positive;5;-1
+7;22;False;7;False;7.412;Weirdo scream;Negative;5;0
+7;22;False;7;False;2.251;Skrivemaskine;Neutral;1;0
+7;22;False;7;False;0.0;Harp floursih;Positive;1;0
